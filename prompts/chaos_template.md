@@ -10,20 +10,27 @@
 ## {{loop.index}}. {{item.title}}
 **Link:** {{item.link}}  
 **Published:** {{item.published}}  
-**Source:** {{item.source}}  
+**Source:** {{item.source}}
 
 **Summary:** {{item.summary}}
 
 **Thinker:** {{item.thinker}}  
 **Doer:** {{item.doer}}  
 **Controller:** {{item.controller}}  
-**Pulse:** {{item.pulse}}  
+**Pulse:** {{item.pulse}}
+
+**Entities:** {{item.entities}}
 
 **Truth Vector:** `{{item.truth_vector}}`
 
 ---
 {% endfor %}
 
+{% if entity_co_occurrences %}
+## Top Entity Co-occurrences
+{{ entity_co_occurrences }}
+
+{% endif %}
 ## Method Notes
-- Truth Vector: Empirical, Logical, Emotional, Historical dimensions.
+- Truth Vector dimensions: Empirical, Logical, Emotional, Historical.
 - Requires analyst validation.
