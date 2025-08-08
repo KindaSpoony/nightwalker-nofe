@@ -27,7 +27,7 @@ def main():
     feeds = cfg.get("feeds", [])
     max_items = cfg.get("max_items_per_feed", 8)
     tz = cfg.get("report_timezone", "UTC")
-    items = fetch_rss(feeds, max_items, tz)
+    items = fetch_rss(feeds, max_items)
 
     stack = NightwalkerAgentStack()
     rendered_items = []
