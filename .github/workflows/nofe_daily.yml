@@ -20,7 +20,7 @@ jobs:
           pip install -r requirements.txt
           python -m nltk.downloader vader_lexicon
       - name: Run NOFE
-        run: python src/nofe/pipeline.py
+        run: PYTHONPATH=src python -m nofe.pipeline
       - name: Commit and push report
         run: |
           git config user.name "nightwalker-bot"
