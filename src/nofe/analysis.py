@@ -1,6 +1,13 @@
 from dataclasses import dataclass, asdict
 from typing import Dict
 from nltk.sentiment import SentimentIntensityAnalyzer
+try:
+    import spacy
+    # Attempt to load the English model; this may fail if the model is not present.
+    _NLP_MODEL = spacy.load("en_core_web_sm")
+except Exception:
+    # Fallback: use None if spaCy or the model is unavailable.
+    _NLP_MODEL = None
 
 @dataclass
 class TruthVector:
@@ -16,6 +23,8 @@ class TruthVector:
 class NightwalkerAgentStack:
     def __init__(self):
         self.sent = SentimentIntensityAnalyzer()
+        # initialize spaCy model once if available
+        self.nlp = _NLP_MODEL
 
     def thinker(self, text: str) -> str:
         return "Contextualizes events vs historical baselines (MVP heuristic)."
@@ -29,6 +38,31 @@ class NightwalkerAgentStack:
     def pulse(self, text: str) -> str:
         s = self.sent.polarity_scores(text or "")
         return f"Sentiment={{'neg':{s['neg']:.2f}, 'neu':{s['neu']:.2f}, 'pos':{s['pos']:.2f}, 'compound':{s['compound']:.2f}}}"
+
+    def extract_entities(self, text: str, max_entities: int = 5) -> list[str]:
+        """
+        Extract named entities from the supplied text using spaCy.
+        Returns a list of the most common entities (PERSON, ORG, GPE, NORP, LOC).
+        If spaCy or the language model is unavailable, returns an empty list.
+        """
+        if not self.nlp or not text:
+            return []
+        try:
+            doc = self.nlp(text)
+        except Exception:
+            return []
+        entities = []
+        for ent in doc.ents:
+            if ent.label_ in {"PERSON", "ORG", "GPE", "NORP", "LOC"}:
+                # normalize whitespace
+                ent_text = ent.text.strip()
+                if ent_text:
+                    entities.append(ent_text)
+        # Count and return the most common entities
+        from collections import Counter
+        counter = Counter([e for e in entities])
+        common = counter.most_common(max_entities)
+        return [item[0] for item in common]
 
 def evaluate_truth_vector(text: str) -> TruthVector:
     notes = "Automated MVP scoring; analyst review required."
