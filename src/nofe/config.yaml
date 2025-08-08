@@ -2,5 +2,9 @@ feeds:
   - https://feeds.bbci.co.uk/news/world/rss.xml
   - https://www.aljazeera.com/xml/rss/all.xml
   - https://rss.nytimes.com/services/xml/rss/nyt/World.xml
+  - https://www.crisisgroup.org/rss           # International Crisis Group (global conflict analysis)
+  - https://www.al-monitor.com/rss            # Al‑Monitor (Middle East)
+  - https://www.theguardian.com/world/rss     # The Guardian world news
+  - https://www.nato.int/rss/news.xml         # NATO newsroom updates
 max_items_per_feed: 5
 report_timezone: UTC
