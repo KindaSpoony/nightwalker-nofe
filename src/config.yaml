@@ -8,3 +8,11 @@ feeds:
   - https://www.nato.int/rss/news.xml         # NATO newsroom updates
 max_items_per_feed: 5
 report_timezone: UTC
+truth_vector:
+  weights:
+    empirical: 0.30
+    logical:   0.30
+    emotional: 0.20
+    historical: 0.20
+  threshold: 0.60 
+  log_path:   reports/calibration_log.csv
