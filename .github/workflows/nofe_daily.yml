@@ -1,0 +1,30 @@
+name: Nightwalker NOFE Daily
+
+on:
+  schedule:
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          python -m nltk.downloader vader_lexicon
+      - name: Run NOFE
+        run: python src/nofe/pipeline.py
+      - name: Commit and push report
+        run: |
+          git config user.name "nightwalker-bot"
+          git config user.email "bot@example.com"
+          git add reports/*.md || true
+          git commit -m "NOFE: daily CHAOS brief" || echo "Nothing to commit"
+          git push
