@@ -86,11 +86,10 @@ def evaluate_truth_vector(
     text: str,
     weights: Dict[str, float] | None = None,
     threshold: float | None = None
-) -> Tuple[TruthVector, float, bool]:
+):
     """
-    Compute the TruthVector for a given text, calculate a weighted score, and
-    determine whether it meets the specified threshold.
-    Returns (TruthVector, weighted_score, is_above_threshold).
+    Compute the TruthVector. If weights/threshold are provided (even an empty dict
+    for weights), also return (score, passed). Otherwise return just the TruthVector.
     """
     tv = TruthVector(
         empirical=_score_empirical(text),
@@ -99,12 +98,18 @@ def evaluate_truth_vector(
         historical=_score_historical(text),
     )
 
+    # Treat an empty dict as 'provided' so calibrators can pass {} and still get a score.
+    use_weights = weights is not None
+    use_threshold = threshold is not None
+    if not use_weights and not use_threshold:
+        return tv
+
     w = _normalize_weights(weights or {})
     score = (
         tv.empirical * w.get("empirical", 0.25)
-        + tv.logical * w.get("logical", 0.25)
+        + tv.logical   * w.get("logical",   0.25)
         + tv.emotional * w.get("emotional", 0.25)
-        + tv.historical * w.get("historical", 0.25)
+        + tv.historical* w.get("historical",0.25)
     )
-    passed = threshold is not None and score >= float(threshold)
+    passed = use_threshold and score >= float(threshold)
     return tv, score, passed
