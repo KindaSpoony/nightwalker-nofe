@@ -35,7 +35,16 @@ def main():
 
     for it in items:
         summary = it.get("summary", "")
-        tv = evaluate_truth_vector(summary)
+
+        # Support BOTH return shapes from evaluate_truth_vector:
+        # - TruthVector (legacy/simple)
+        # - (TruthVector, score, passed) (calibrated)
+        res = evaluate_truth_vector(summary)
+        if isinstance(res, tuple):
+            tv, tv_score, tv_pass = res
+        else:
+            tv, tv_score, tv_pass = res, None, None
+
         entities = stack.extract_entities(summary) or []
 
         # Deduplicate while preserving order
@@ -45,7 +54,7 @@ def main():
             pair = tuple(sorted((a, b)))
             co_occurrence_counter[pair] += 1
 
-        rendered_items.append({
+        item_row = {
             "title": it["title"],
             "link": it["link"],
             "published": it["published"],
@@ -56,8 +65,14 @@ def main():
             "controller": stack.controller(summary),
             "pulse": stack.pulse(summary),
             "truth_vector": tv.to_dict(),
-            "entities": ", ".join(entities)
-        })
+            "entities": ", ".join(entities),
+        }
+        # Add score/pass only if provided so templates don’t break.
+        if tv_score is not None:
+            item_row["truth_score"] = round(tv_score, 4)
+            item_row["truth_pass"] = tv_pass
+
+        rendered_items.append(item_row)
 
     # Build top co-occurrence summary
     co_occurrences_summary = ""
