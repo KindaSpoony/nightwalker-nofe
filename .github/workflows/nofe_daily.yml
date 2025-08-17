@@ -42,6 +42,8 @@ jobs:
         run: |
           git config user.name "nightwalker-bot"
           git config user.email "bot@example.com"
+          # Bring the local main branch up to date so pushes aren’t rejected
+          git pull --rebase origin main
           git add reports/*.md || true
-          git commit -m "NOFE: daily CHAOS brief and AI analysis" || echo "Nothing to commit"
+          git commit -m "NOFE: daily CHAOS brief and AI analysis" || echo "Nothing to commit" commit"
           git push origin HEAD:main
