@@ -1,5 +1,7 @@
 # src/nofe/ai_analysis.py
-import os, openai, argparse
+import os
+import openai
+import argparse
 from pathlib import Path
 
 SYSTEM_PROMPT = (
