@@ -28,7 +28,18 @@ def generate_ai_analysis(report_text: str) -> str:
         temperature=0.4,
         max_tokens=1000,
     )
-    return response["choices"][0]["message"]["content"].strip()
+    client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": report_text},
+    ]
+    response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=messages,
+        temperature=0.4,
+        max_tokens=1000,
+    )
+    return response.choices[0].message.content.strip()
 
 def main(report_path: str, output_path: str):
     text = load_report(report_path)
