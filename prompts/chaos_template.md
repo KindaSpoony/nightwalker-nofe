@@ -34,3 +34,7 @@
 ## Method Notes
 - Truth Vector dimensions: Empirical, Logical, Emotional, Historical.
 - Requires analyst validation.
+{% if ai_analysis %}
+## AI Analysis
+{{ ai_analysis }}
+{% endif %}

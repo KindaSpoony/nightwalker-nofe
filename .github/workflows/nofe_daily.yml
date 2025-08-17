@@ -12,22 +12,36 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           python -m nltk.downloader vader_lexicon
-              python -m spacy download en_core_web_sm
+          python -m spacy download en_core_web_sm
+
       - name: Run NOFE
         env:
           PYTHONPATH: src
         run: python -m nofe.pipeline
-      - name: Commit and push report
+
+      - name: Generate AI analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONPATH: src
+        run: |
+          # Find the latest CHAOS report
+          REPORT=$(ls reports/CHAOS_*.md | sort | tail -n1)
+          # Run your AI analysis module on it
+          python -m nofe.ai_analysis "$REPORT"
+
+      - name: Commit and push report and analysis
         run: |
           git config user.name "nightwalker-bot"
           git config user.email "bot@example.com"
           git add reports/*.md || true
-          git commit -m "NOFE: daily CHAOS brief" || echo "Nothing to commit"
+          git commit -m "NOFE: daily CHAOS brief and AI analysis" || echo "Nothing to commit"
           git push

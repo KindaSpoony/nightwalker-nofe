@@ -1,3 +1,4 @@
+# List of RSS feeds to ingest
 feeds:
   - https://feeds.bbci.co.uk/news/world/rss.xml
   - https://www.aljazeera.com/xml/rss/all.xml
@@ -6,13 +7,23 @@ feeds:
   - https://www.al-monitor.com/rss            # Al‑Monitor (Middle East)
   - https://www.theguardian.com/world/rss     # The Guardian world news
   - https://www.nato.int/rss/news.xml         # NATO newsroom updates
-max_items_per_feed: 5
+
+# Maximum number of items to pull from each feed
+max_items_per_feed: 8
+
+# Timezone used for timestamping the report
 report_timezone: UTC
+
+# Truth Vector calibration settings (legacy scoring)
 truth_vector:
   weights:
     empirical: 0.30
     logical:   0.30
     emotional: 0.20
     historical: 0.20
-  threshold: 0.60 
-  log_path:   reports/calibration_log.csv
+  threshold: 0.60
+  log_path: reports/calibration_log.csv
+
+# AI analysis settings
+enable_ai_analysis: true
+ai_analysis_inline: false
