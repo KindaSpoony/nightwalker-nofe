@@ -25,5 +25,5 @@ truth_vector:
   log_path: reports/calibration_log.csv
 
 # AI analysis settings
-enable_ai_analysis: true
+enable_ai_analysis: false
 ai_analysis_inline: false
