@@ -40,10 +40,29 @@ jobs:
 
       - name: Commit and push report and analysis
         run: |
+          set -euo pipefail
+
           git config user.name "nightwalker-bot"
           git config user.email "bot@example.com"
-          # Bring the local main branch up to date so pushes aren’t rejected
-          git pull --rebase origin main
-          git add reports/*.md || true
-          git commit -m "NOFE: daily CHAOS brief and AI analysis" || echo "Nothing to commit" commit"
-          git push origin HEAD:main
+
+          # Ensure we're on main with full history (rebase/push-safe)
+          git fetch origin main
+          git checkout -B main origin/main
+
+          # Only add if files actually exist; avoid wildcard errors
+          shopt -s nullglob
+          files=(reports/*.md)
+
+          if ((${#files[@]})); then
+           git add "${files[@]}"
+
+            # Commit only if there are staged changes
+            if ! git diff --cached --quiet; then
+              git commit -m "NOFE: daily CHAOS brief and AI analysis [skip ci]"
+              git push origin main
+            else
+              echo "Nothing to commit."
+            fi
+          else
+            echo "No report files to add."
+          fi
