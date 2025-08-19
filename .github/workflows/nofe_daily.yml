@@ -2,7 +2,7 @@ name: Nightwalker NOFE Daily
 
 on:
   schedule:
-    - cron: '0 14 * * *'
+    - cron: '0 14 * * *'   # 14:00 UTC = 07:00 PT (Tri-Cities, in summer)
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - uses: actions/setup-python@v5
         with:
@@ -23,40 +26,48 @@ jobs:
           python -m nltk.downloader vader_lexicon
           python -m spacy download en_core_web_sm
 
+      # If you choose Option A, pass OPENAI_API_KEY here and delete the next "Generate AI analysis" step.
       - name: Run NOFE
         env:
           PYTHONPATH: src
         run: python -m nofe.pipeline
 
+      - name: Debug reports (optional)
+        run: |
+          ls -la reports || true
+          git status --porcelain
+
+      # Keep this step only for Option B (and set enable_ai_analysis:false in config.yaml)
       - name: Generate AI analysis
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PYTHONPATH: src
+        shell: bash
         run: |
-          # Find the latest CHAOS report
-          REPORT=$(ls reports/CHAOS_*.md | sort | tail -n1)
-          # Run your AI analysis module on it
+          set -euo pipefail
+          REPORT="$(ls -t reports/CHAOS_*.md 2>/dev/null | head -n1 || true)"
+          if [ -z "${REPORT:-}" ]; then
+            echo "No CHAOS report found; skipping AI analysis."
+            exit 0
+          fi
           python -m nofe.ai_analysis "$REPORT"
 
       - name: Commit and push report and analysis
+        shell: bash
         run: |
           set -euo pipefail
 
           git config user.name "nightwalker-bot"
           git config user.email "bot@example.com"
 
-          # Ensure we're on main with full history (rebase/push-safe)
           git fetch origin main
           git checkout -B main origin/main
 
-          # Only add if files actually exist; avoid wildcard errors
           shopt -s nullglob
           files=(reports/*.md)
 
           if ((${#files[@]})); then
-           git add "${files[@]}"
-
-            # Commit only if there are staged changes
+            git add "${files[@]}"
             if ! git diff --cached --quiet; then
               git commit -m "NOFE: daily CHAOS brief and AI analysis [skip ci]"
               git push origin main
