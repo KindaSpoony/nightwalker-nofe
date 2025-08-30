@@ -1,20 +1,51 @@
-# List of RSS feeds to ingest
+# List of RSS/Atom feeds to ingest (flat list for current fetch_rss)
 feeds:
+  # Core world news (existing)
   - https://feeds.bbci.co.uk/news/world/rss.xml
   - https://www.aljazeera.com/xml/rss/all.xml
   - https://rss.nytimes.com/services/xml/rss/nyt/World.xml
-  - https://www.crisisgroup.org/rss           # International Crisis Group (global conflict analysis)
-  - https://www.al-monitor.com/rss            # Al‑Monitor (Middle East)
-  - https://www.theguardian.com/world/rss     # The Guardian world news
-  - https://www.nato.int/rss/news.xml         # NATO newsroom updates
+  - https://www.crisisgroup.org/rss
+  - https://www.al-monitor.com/rss
+  - https://www.theguardian.com/world/rss
+  - https://www.nato.int/rss/news.xml
 
-# Maximum number of items to pull from each feed
-max_items_per_feed: 8
+  # Multilateral / official
+  - https://news.un.org/feed/subscribe/en/news/all/rss.xml          # UN News (top/all)
+  - https://www.osce.org/press-releases/rss                         # OSCE press/news
+  - https://www.defense.gov/DesktopModules/ArticleCS/RSS.ashx?ContentType=1&Site=945&max=10  # U.S. DoD News
+  # (Optional UK MoD / gov.uk feeds are Atom and varied; leave commented unless needed)
+  # - https://www.gov.uk/government/organisations/ministry-of-defence.atom
+
+  # Security / cyber
+  - https://isc.sans.edu/rssfeed_full.xml                           # SANS Internet Storm Center
+  - https://www.us-cert.gov/ncas/alerts.xml                         # CISA Alerts (legacy URL still used)
+  - http://www.us-cert.gov/control_systems/xml/rss.xml              # CISA ICS Advisories
+
+  # Think tanks & analysis
+  - https://www.chathamhouse.org/rss.xml
+  - https://warontherocks.com/feed/
+  - https://www.understandingwar.org/feeds/all                      # ISW
+  - https://www.sipri.org/rss
+  - https://www.atlanticcouncil.org/feed/
+
+  # Regional / specialty
+  - https://www.france24.com/en/rss
+  - https://www.timesofisrael.com/the-daily-edition/rss-feed/
+  - https://asia.nikkei.com/rss                                    # Nikkei Asia
+  - https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf # AllAfrica (latest)
+
+  # Supply chain / maritime (situational awareness)
+  - https://gcaptain.com/feed/
+  - https://www.marinelink.com/news/rss
+  - https://www.maritime-executive.com/rss
+
+# Pull fewer per-source now that we have more sources
+max_items_per_feed: 5
 
 # Timezone used for timestamping the report
 report_timezone: UTC
 
-# Truth Vector calibration settings (legacy scoring)
+# Truth Vector calibration settings (unchanged)
 truth_vector:
   weights:
     empirical: 0.30
