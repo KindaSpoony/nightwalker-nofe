@@ -58,4 +58,4 @@ truth_vector:
 # AI analysis settings
 enable_ai_analysis: true
 ai_analysis_inline: false
-ai_model: "GPT-5"
+ai_model: "gpt-5"
