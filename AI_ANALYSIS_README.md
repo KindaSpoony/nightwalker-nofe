@@ -18,7 +18,7 @@ AI analysis is controlled by settings in `src/config.yaml`:
 # AI analysis settings
 enable_ai_analysis: true        # Enable/disable AI analysis
 ai_analysis_inline: false      # Inline vs separate file output
-ai_model: "gpt-4o-mini"        # OpenAI model to use (optional)
+ai_model: "GPT-5"              # OpenAI model to use (optional)
 ```
 
 ### Settings Explained
@@ -27,7 +27,7 @@ ai_model: "gpt-4o-mini"        # OpenAI model to use (optional)
 - **`ai_analysis_inline`**: 
   - `false`: Creates separate `AI_CHAOS_YYYYMMDD.md` files
   - `true`: Appends AI analysis to the main CHAOS report
-- **`ai_model`**: Specifies which OpenAI model to use (defaults to "gpt-4o-mini")
+- **`ai_model`**: Specifies which OpenAI model to use (defaults to "GPT-5")
 
 ## API Key Setup
 

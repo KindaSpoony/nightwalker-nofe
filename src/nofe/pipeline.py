@@ -120,7 +120,7 @@ def main() -> None:
 
     # Optionally run AI analysis
     if cfg.get("enable_ai_analysis"):
-        ai_summary = generate_ai_analysis(report_text)
+        ai_summary = generate_ai_analysis(report_text, cfg=cfg)
         inline = cfg.get("ai_analysis_inline", False)
         if inline:
             # Append AI analysis to the same report
