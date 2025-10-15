@@ -48,7 +48,7 @@ def generate_ai_analysis(report_text: str, cfg: Optional[Dict] = None) -> str:
     if not api_key:
         return "AI analysis skipped: missing OPENAI_API_KEY."
 
-    model = (cfg or {}).get("ai_model", "gpt-4o-mini")
+    model = (cfg or {}).get("ai_model", "GPT-5")
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": report_text[:120000]},  # safety truncation

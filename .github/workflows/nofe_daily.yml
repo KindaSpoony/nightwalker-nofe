@@ -30,7 +30,7 @@ jobs:
       - name: Run NOFE
         env:
           PYTHONPATH: src
-        run: python -m nofe.pipeline
+        run: python -m nofe.pipeline  # uses GPT-5 for AI analysis by default (see src/nofe/config.yaml)
 
       - name: Debug reports (optional)
         run: |

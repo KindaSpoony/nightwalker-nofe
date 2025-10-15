@@ -13,6 +13,10 @@ python src/nofe/pipeline.py
 
 Reports will be generated in `reports/` as `CHAOS_YYYYMMDD.md`.
 
+### AI Analysis Model
+
+If you enable the optional AI analysis module, NOFE will default to OpenAI's GPT-5 model. You can adjust the `ai_model` value in `src/nofe/config.yaml` if you need to target a different release.
+
 ## GitHub Actions Automation
 A workflow is provided in `.github/workflows/nofe_daily.yml` to automatically run the pipeline daily, commit the results to the repo, and push to the `main` branch.
 
