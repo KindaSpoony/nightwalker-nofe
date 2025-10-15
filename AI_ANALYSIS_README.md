@@ -18,7 +18,7 @@ AI analysis is controlled by settings in `src/config.yaml`:
 # AI analysis settings
 enable_ai_analysis: true        # Enable/disable AI analysis
 ai_analysis_inline: false      # Inline vs separate file output
-ai_model: "GPT-5"              # OpenAI model to use (optional)
+ai_model: "gpt-5"              # OpenAI model to use (optional)
 ```
 
 ### Settings Explained
@@ -27,7 +27,7 @@ ai_model: "GPT-5"              # OpenAI model to use (optional)
 - **`ai_analysis_inline`**: 
   - `false`: Creates separate `AI_CHAOS_YYYYMMDD.md` files
   - `true`: Appends AI analysis to the main CHAOS report
-- **`ai_model`**: Specifies which OpenAI model to use (defaults to "GPT-5")
+- **`ai_model`**: Specifies which OpenAI model to use (defaults to "gpt-5" with automatic fallback)
 
 ## API Key Setup
 
@@ -89,6 +89,7 @@ The system gracefully handles various scenarios:
 
 - **Missing API Key**: Returns "AI analysis skipped: missing OPENAI_API_KEY."
 - **API Errors**: Falls back from new OpenAI SDK to legacy SDK if needed
+- **Model Access Issues**: Automatically retries with `gpt-5-preview`, `gpt-4o`, and `gpt-4o-mini` if the preferred model isn't available
 - **Rate Limits**: Basic error handling for API rate limiting
 - **Large Reports**: Automatically truncates input to 120,000 characters
 
