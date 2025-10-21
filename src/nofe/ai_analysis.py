@@ -19,16 +19,39 @@ def load_report(report_path: str) -> str:
 def _get_api_key(cfg: Optional[Dict] = None) -> Optional[str]:
     return os.getenv("OPENAI_API_KEY") or (cfg or {}).get("openai_api_key")
 
-def _chat_new_client(api_key: str, model: str, messages, temperature: float, max_tokens: int) -> str:
+def _chat_new_client(
+    api_key: str,
+    model: str,
+    messages,
+    temperature: float,
+    max_tokens: int,
+) -> str:
+    """Call the modern OpenAI chat client.
+
+    Some of the newest models (notably the ``gpt-5`` family) switched from the
+    historical ``max_tokens`` parameter to ``max_completion_tokens``.  Passing the
+    wrong argument yields a ``400`` response that terminates the run.  We map the
+    appropriate field here so callers can continue providing a single
+    ``max_tokens`` argument.
+    """
+
     # New OpenAI SDK (>=1.0): from openai import OpenAI
     from openai import OpenAI
+
     client = OpenAI(api_key=api_key)
-    resp = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        temperature=temperature,
-        max_tokens=max_tokens,
-    )
+
+    request_kwargs = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+    }
+
+    if model.lower().startswith("gpt-5"):
+        request_kwargs["max_completion_tokens"] = max_tokens
+    else:
+        request_kwargs["max_tokens"] = max_tokens
+
+    resp = client.chat.completions.create(**request_kwargs)
     return resp.choices[0].message.content.strip()
 
 def _chat_legacy(api_key: str, model: str, messages, temperature: float, max_tokens: int) -> str:
