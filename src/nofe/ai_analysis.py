@@ -105,14 +105,35 @@ def _should_retry_with_fallback(exc: Exception) -> bool:
 
 
 def _call_chat_completion(api_key: str, model: str, messages, temperature: float, max_tokens: int) -> str:
-    last_error: Optional[Exception] = None
-    for fn in (_chat_new_client, _chat_legacy):
-        try:
-            return fn(api_key, model, messages, temperature=temperature, max_tokens=max_tokens)
-        except Exception as exc:  # pragma: no cover - exercised in CI failures
-            last_error = exc
-    assert last_error is not None  # for type checkers
-    raise last_error
+    """Call the appropriate OpenAI chat completion helper.
+
+    The project depends on ``openai>=1.0.0`` which exposes the ``OpenAI``
+    client.  However, we keep a lightweight fallback to the legacy SDK so that
+    older environments can still function when the new client is unavailable.
+    Import errors are the only case that should trigger the legacy path – API
+    errors (e.g. unknown model) must propagate so the caller can try fallbacks.
+    """
+
+    try:
+        return _chat_new_client(
+            api_key,
+            model,
+            messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+    except (ImportError, ModuleNotFoundError, AttributeError):  # pragma: no cover - exercised when new SDK missing
+        # Fall through to the legacy implementation when the modern client is
+        # not importable (e.g. ``openai<1.0`` still installed).
+        pass
+
+    return _chat_legacy(
+        api_key,
+        model,
+        messages,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
 
 
 def _format_failure_message(failures: List[Tuple[str, Exception]]) -> str:
