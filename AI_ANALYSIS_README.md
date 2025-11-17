@@ -18,7 +18,7 @@ AI analysis is controlled by settings in `src/config.yaml`:
 # AI analysis settings
 enable_ai_analysis: true        # Enable/disable AI analysis
 ai_analysis_inline: false      # Inline vs separate file output
-ai_model: "gpt-5"              # OpenAI model to use (optional)
+ai_model: "gpt-5.1"            # OpenAI reasoning model to use (optional)
 ```
 
 ### Settings Explained
@@ -27,7 +27,9 @@ ai_model: "gpt-5"              # OpenAI model to use (optional)
 - **`ai_analysis_inline`**: 
   - `false`: Creates separate `AI_CHAOS_YYYYMMDD.md` files
   - `true`: Appends AI analysis to the main CHAOS report
-- **`ai_model`**: Specifies which OpenAI model to use (defaults to "gpt-5" with automatic fallback)
+- **`ai_model`**: Specifies which OpenAI model to use (defaults to the GPT-5.1 reasoning model with `reasoning_effort="none"` and automatic fallback)
+
+> **Reasoning configuration:** GPT-5.1 is a reasoning-capable model. The NOFE integration explicitly calls it with `reasoning_effort="none"` to minimize latency and cost while still enabling the upgraded reasoning stack. You can override this behavior by providing a custom `ai_model` or modifying the configuration if you need deeper reasoning passes.
 
 ## API Key Setup
 
@@ -89,7 +91,7 @@ The system gracefully handles various scenarios:
 
 - **Missing API Key**: Returns "AI analysis skipped: missing OPENAI_API_KEY."
 - **API Errors**: Falls back from new OpenAI SDK to legacy SDK if needed
-- **Model Access Issues**: Automatically retries with `gpt-5-preview`, `gpt-4o`, and `gpt-4o-mini` if the preferred model isn't available
+- **Model Access Issues**: Automatically retries with `gpt-5.1-mini`, `gpt-4.1`, and `gpt-4.1-mini` if the preferred model isn't available
 - **Rate Limits**: Basic error handling for API rate limiting
 - **Large Reports**: Automatically truncates input to 120,000 characters
 
