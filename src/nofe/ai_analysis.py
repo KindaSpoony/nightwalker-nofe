@@ -188,7 +188,17 @@ def generate_ai_analysis(report_text: str, cfg: Optional[Dict] = None) -> str:
     failures: List[Tuple[str, Exception]] = []
     for model in _iter_models(preferred_model):
         try:
-            return _call_chat_completion(api_key, model, messages, temperature=0.4, max_tokens=1000)
+            # Most GPT-5 models only accept the default temperature (1). Using
+            # a lower value causes the API to raise ``invalid_request_error``.
+            # Retain the previous signature (callers can still pass their own
+            # value in ``cfg``) but default to ``1`` here for compatibility.
+            return _call_chat_completion(
+                api_key,
+                model,
+                messages,
+                temperature=1,
+                max_tokens=1000,
+            )
         except Exception as exc:
             failures.append((model, exc))
             if not _should_retry_with_fallback(exc):
