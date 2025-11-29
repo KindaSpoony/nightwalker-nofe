@@ -29,7 +29,7 @@ ai_model: "gpt-5.1"            # OpenAI reasoning model to use (optional)
   - `true`: Appends AI analysis to the main CHAOS report
 - **`ai_model`**: Specifies which OpenAI model to use (defaults to the GPT-5.1 reasoning model with `reasoning_effort="none"` and automatic fallback)
 
-> **Reasoning configuration:** GPT-5.1 is a reasoning-capable model. The NOFE integration explicitly calls it with `reasoning_effort="none"` to minimize latency and cost while still enabling the upgraded reasoning stack. You can override this behavior by providing a custom `ai_model` or modifying the configuration if you need deeper reasoning passes.
+> **Reasoning configuration:** GPT-5.1 is a reasoning-capable model. The NOFE integration explicitly calls it with `reasoning_effort="none"` to minimize latency and cost while still enabling the upgraded reasoning stack. You can override this behavior by providing a custom `ai_model` or modifying the configuration if you need deeper reasoning passes. Install OpenAI Python SDK `>=1.54.0` so the chat completions endpoint accepts the `reasoning` parameter; older releases will raise an "unexpected keyword argument 'reasoning'" error.
 
 ## API Key Setup
 
