@@ -1,15 +1,22 @@
-import yaml
 import os
-from datetime import datetime, timezone
-from pathlib import Path
-from jinja2 import Template
+import sys
 from collections import Counter
+from datetime import datetime, timezone
 from itertools import combinations
+from pathlib import Path
 
-from nofe.ingestion import fetch_rss
-from nofe.analysis import NightwalkerAgentStack, evaluate_truth_vector
+import yaml
+from jinja2 import Template
+
+# Ensure `src/` is on the import path so `python src/nofe/pipeline.py` works
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from nofe.ai_analysis import generate_ai_analysis  # assumes you’ve implemented this
                                                    # as described earlier
+from nofe.analysis import NightwalkerAgentStack, evaluate_truth_vector
+from nofe.ingestion import fetch_rss
 
 # Paths relative to this file; BASE points to src/nofe, ROOT is the repo root
 BASE = os.path.dirname(os.path.dirname(__file__))

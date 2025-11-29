@@ -1,12 +1,21 @@
-import yaml, os
-from datetime import datetime, timezone
-from jinja2 import Template
-from nofe.ingestion import fetch_rss
-from nofe.analysis import NightwalkerAgentStack, evaluate_truth_vector
-from collections import Counter
-from itertools import combinations
 import csv
+import os
+import sys
+from collections import Counter
+from datetime import datetime, timezone
+from itertools import combinations
 import pathlib
+
+import yaml
+from jinja2 import Template
+
+# Ensure `src/` is on the import path so running the script directly works
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from nofe.analysis import NightwalkerAgentStack, evaluate_truth_vector
+from nofe.ingestion import fetch_rss
 
 BASE = os.path.dirname(os.path.dirname(__file__))
 ROOT = os.path.dirname(BASE)

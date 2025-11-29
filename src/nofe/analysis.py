@@ -1,5 +1,6 @@
 from dataclasses import dataclass, asdict
 from typing import Dict, Tuple
+import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
 try:
@@ -42,7 +43,13 @@ def _score_historical(text: str) -> float:
 
 class NightwalkerAgentStack:
     def __init__(self):
-        self.sent = SentimentIntensityAnalyzer()
+        try:
+            self.sent = SentimentIntensityAnalyzer()
+        except LookupError:
+            # Auto-fetch the VADER lexicon if it is missing so the runtime does
+            # not crash when the NLTK data has not been pre-downloaded.
+            nltk.download("vader_lexicon", quiet=True)
+            self.sent = SentimentIntensityAnalyzer()
         # initialize spaCy model once if available
         self.nlp = _NLP_MODEL
 
